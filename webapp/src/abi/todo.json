@@ -1,0 +1,178 @@
+[
+  { "type": "constructor", "inputs": [], "stateMutability": "nonpayable" },
+  {
+    "type": "function",
+    "name": "archiveTask",
+    "inputs": [{ "name": "_id", "type": "uint16", "internalType": "uint16" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "createTask",
+    "inputs": [
+      { "name": "_title", "type": "string", "internalType": "string" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getTask",
+    "inputs": [{ "name": "_id", "type": "uint16", "internalType": "uint16" }],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct Todo.Task",
+        "components": [
+          { "name": "id", "type": "uint16", "internalType": "uint16" },
+          { "name": "title", "type": "string", "internalType": "string" },
+          {
+            "name": "status",
+            "type": "uint8",
+            "internalType": "enum Todo.TaskStatus"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTasks",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct Todo.Task[]",
+        "components": [
+          { "name": "id", "type": "uint16", "internalType": "uint16" },
+          { "name": "title", "type": "string", "internalType": "string" },
+          {
+            "name": "status",
+            "type": "uint8",
+            "internalType": "enum Todo.TaskStatus"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "taskCount",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint16", "internalType": "uint16" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "tasks",
+    "inputs": [{ "name": "", "type": "uint16", "internalType": "uint16" }],
+    "outputs": [
+      { "name": "id", "type": "uint16", "internalType": "uint16" },
+      { "name": "title", "type": "string", "internalType": "string" },
+      {
+        "name": "status",
+        "type": "uint8",
+        "internalType": "enum Todo.TaskStatus"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "toggleTaskDone",
+    "inputs": [{ "name": "_id", "type": "uint16", "internalType": "uint16" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateTaskTitle",
+    "inputs": [
+      { "name": "_id", "type": "uint16", "internalType": "uint16" },
+      { "name": "_title", "type": "string", "internalType": "string" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "TaskArchived",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint16",
+        "indexed": true,
+        "internalType": "uint16"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum Todo.TaskStatus"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TaskCreated",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint16",
+        "indexed": true,
+        "internalType": "uint16"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TaskUpdated",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint16",
+        "indexed": true,
+        "internalType": "uint16"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum Todo.TaskStatus"
+      }
+    ],
+    "anonymous": false
+  }
+]

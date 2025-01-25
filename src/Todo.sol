@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+// TODO: add time tracking
+// TODO: add task priority
+// TODO: add title length limit
+// TODO: add task description(optional)
 contract Todo {
     enum TaskStatus {
         Pending,
@@ -36,7 +40,9 @@ contract Todo {
         _;
     }
 
-    function getTask(uint16 _id) external view onlyOwner taskExist(_id) returns (Task memory) {
+    function getTask(
+        uint16 _id
+    ) external view onlyOwner taskExist(_id) returns (Task memory) {
         return tasks[_id];
     }
 
@@ -53,7 +59,11 @@ contract Todo {
             taskCount++;
         }
         uint16 newTaskId = taskCount;
-        tasks[newTaskId] = Task({id: newTaskId, title: _title, status: TaskStatus.Pending});
+        tasks[newTaskId] = Task({
+            id: newTaskId,
+            title: _title,
+            status: TaskStatus.Pending
+        });
         emit TaskCreated(newTaskId, _title);
     }
 
@@ -62,14 +72,23 @@ contract Todo {
 
         require(task.status != TaskStatus.Archived, "Task is archived");
 
-        task.status = task.status == TaskStatus.Pending ? TaskStatus.Done : TaskStatus.Pending;
+        task.status = task.status == TaskStatus.Pending
+            ? TaskStatus.Done
+            : TaskStatus.Pending;
         emit TaskUpdated(task.id, task.title, task.status);
     }
 
-    function updateTaskTitle(uint16 _id, string calldata _title) external onlyOwner taskExist(_id) {
+    function updateTaskTitle(
+        uint16 _id,
+        string calldata _title
+    ) external onlyOwner taskExist(_id) {
         Task storage task = tasks[_id];
 
-        require(keccak256(abi.encodePacked(task.title)) != keccak256(abi.encodePacked(_title)), "Title is same");
+        require(
+            keccak256(abi.encodePacked(task.title)) !=
+                keccak256(abi.encodePacked(_title)),
+            "Title is same"
+        );
         require(task.status != TaskStatus.Archived, "Task is archived");
         require(task.status != TaskStatus.Done, "Task is done");
 
