@@ -13,6 +13,7 @@ contract Todo {
         string title;
         TaskStatus status;
     }
+
     event TaskCreated(uint16 indexed id, string title);
     event TaskUpdated(uint16 indexed id, string title, TaskStatus status);
     event TaskArchived(uint16 indexed id, string title, TaskStatus status);
@@ -35,9 +36,7 @@ contract Todo {
         _;
     }
 
-    function getTask(
-        uint16 _id
-    ) external view onlyOwner taskExist(_id) returns (Task memory) {
+    function getTask(uint16 _id) external view onlyOwner taskExist(_id) returns (Task memory) {
         return tasks[_id];
     }
 
@@ -54,33 +53,35 @@ contract Todo {
             taskCount++;
         }
         uint16 newTaskId = taskCount;
-        tasks[newTaskId] = Task({
-            id: newTaskId,
-            title: _title,
-            status: TaskStatus.Pending
-        });
+        tasks[newTaskId] = Task({id: newTaskId, title: _title, status: TaskStatus.Pending});
         emit TaskCreated(newTaskId, _title);
     }
 
     function toggleTaskDone(uint16 _id) external onlyOwner taskExist(_id) {
         Task storage task = tasks[_id];
-        task.status = task.status == TaskStatus.Pending
-            ? TaskStatus.Done
-            : TaskStatus.Pending;
+
+        require(task.status != TaskStatus.Archived, "Task is archived");
+
+        task.status = task.status == TaskStatus.Pending ? TaskStatus.Done : TaskStatus.Pending;
         emit TaskUpdated(task.id, task.title, task.status);
     }
 
-    function updateTaskTitle(
-        uint16 _id,
-        string calldata _title
-    ) external onlyOwner taskExist(_id) {
+    function updateTaskTitle(uint16 _id, string calldata _title) external onlyOwner taskExist(_id) {
         Task storage task = tasks[_id];
+
+        require(keccak256(abi.encodePacked(task.title)) != keccak256(abi.encodePacked(_title)), "Title is same");
+        require(task.status != TaskStatus.Archived, "Task is archived");
+        require(task.status != TaskStatus.Done, "Task is done");
+
         task.title = _title;
         emit TaskUpdated(task.id, task.title, task.status);
     }
 
     function archiveTask(uint16 _id) external onlyOwner taskExist(_id) {
         Task storage task = tasks[_id];
+
+        require(task.status != TaskStatus.Archived, "Task is already archived");
+
         task.status = TaskStatus.Archived;
         emit TaskArchived(task.id, task.title, task.status);
     }

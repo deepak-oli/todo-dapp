@@ -4,11 +4,14 @@ pragma solidity ^0.8.13;
 import {Test, console, Vm} from "forge-std/Test.sol";
 import {Todo} from "../src/Todo.sol";
 
-// TODO: test events emitted
 contract TodoTest is Test {
     Todo public todo;
     address public owner;
     address public nonOwner;
+
+    event TaskCreated(uint16 indexed id, string title);
+    event TaskUpdated(uint16 indexed id, string title, Todo.TaskStatus status);
+    event TaskArchived(uint16 indexed id, string title, Todo.TaskStatus status);
 
     function setUp() public {
         owner = address(this);
@@ -19,12 +22,18 @@ contract TodoTest is Test {
     // CREATE TASK
     function test_create_task() public {
         vm.prank(owner);
-        todo.createTask("Task 1");
+
+        string memory title = "Task 1";
+
+        vm.expectEmit(true, false, false, true);
+        emit TaskCreated(1, title);
+
+        todo.createTask(title);
         assertEq(todo.taskCount(), 1);
 
         Todo.Task memory task = todo.getTask(1);
         assertEq(task.id, 1);
-        assertEq(task.title, "Task 1");
+        assertEq(task.title, title);
         assertEq(uint256(task.status), uint256(Todo.TaskStatus.Pending));
     }
 
@@ -46,6 +55,15 @@ contract TodoTest is Test {
         assertEq(uint256(task.status), uint256(Todo.TaskStatus.Done));
     }
 
+    function test_toggle_task_done_revert_on_archived() public {
+        vm.prank(owner);
+        todo.createTask("Task 1");
+        todo.archiveTask(1);
+        vm.expectRevert("Task is archived");
+
+        todo.toggleTaskDone(1);
+    }
+
     function test_task_exist_on_toggle() public {
         vm.prank(owner);
         vm.expectRevert("Task not found");
@@ -63,11 +81,48 @@ contract TodoTest is Test {
     // UPDATE TASK
     function test_update_task_title() public {
         vm.prank(owner);
-        todo.createTask("Task 1");
-        todo.updateTaskTitle(1, "Task 1 updated");
+
+        string memory title = "Task 1";
+        string memory updatedTitle = "Task 1 updated";
+
+        vm.expectEmit(true, false, false, true);
+        emit TaskCreated(1, title);
+
+        todo.createTask(title);
+
+        vm.expectEmit(true, false, false, true);
+        emit TaskUpdated(1, updatedTitle, Todo.TaskStatus.Pending);
+
+        todo.updateTaskTitle(1, updatedTitle);
 
         Todo.Task memory task = todo.getTask(1);
-        assertEq(task.title, "Task 1 updated");
+        assertEq(task.title, updatedTitle);
+    }
+
+    function test_update_task_title_revert_on_same_title() public {
+        vm.prank(owner);
+        todo.createTask("Task 1");
+        vm.expectRevert("Title is same");
+
+        todo.updateTaskTitle(1, "Task 1");
+    }
+
+    function test_update_task_title_revert_on_archived() public {
+        vm.prank(owner);
+        todo.createTask("Task 1");
+        todo.archiveTask(1);
+        vm.expectRevert("Task is archived");
+
+        todo.updateTaskTitle(1, "Task 1 updated");
+    }
+
+    function test_update_task_title_revert_on_done() public {
+        vm.prank(owner);
+        todo.createTask("Task 1");
+        todo.toggleTaskDone(1);
+        vm.expectRevert("Task is done");
+
+        todo.updateTaskTitle(1, "Task 1 updated");
     }
 
     function test_task_exist_revert_on_update() public {
@@ -94,6 +149,14 @@ contract TodoTest is Test {
         assertEq(uint256(task.status), uint256(Todo.TaskStatus.Archived));
     }
 
+    function test_already_archived_task_revert_on_archive() public {
+        vm.prank(owner);
+        todo.createTask("Task 1");
+        todo.archiveTask(1);
+        vm.expectRevert("Task is already archived");
+        todo.archiveTask(1);
+    }
+
     function test_task_exist_revert_on_archive() public {
         vm.prank(owner);
         vm.expectRevert("Task not found");
@@ -109,7 +172,6 @@ contract TodoTest is Test {
     }
 
     // GET TASKS
-
     function test_get_task() public {
         vm.prank(owner);
         todo.createTask("Task 1");
