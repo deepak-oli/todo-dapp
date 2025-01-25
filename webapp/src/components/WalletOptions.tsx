@@ -1,22 +1,33 @@
 import { useConnect } from "wagmi";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 export default function WalletOptions() {
   const { connectors, connect, isPending } = useConnect();
 
   return (
-    <>
-      {connectors.map((connector) => (
-        <button
-          key={connector.id}
-          onClick={() => {
-            connect({ connector });
-          }}
-          className="p-2 m-2 bg-blue-500 text-white rounded"
-        >
-          Connect with {connector.name}
-          {isPending ? " (connecting)" : ""}
-        </button>
-      ))}
-    </>
+    <div className="flex justify-center items-center h-screen">
+      <div>
+        {connectors.map((connector) => (
+          <Button
+            key={connector.id}
+            onClick={() => {
+              connect({ connector });
+            }}
+          >
+            {isPending ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <img
+                src="https://metamask.io/assets/icon.svg"
+                alt=""
+                className="h-5"
+              />
+            )}
+            Connect with {connector.name}
+          </Button>
+        ))}
+      </div>
+    </div>
   );
 }

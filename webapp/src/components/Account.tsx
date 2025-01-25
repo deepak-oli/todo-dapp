@@ -1,17 +1,19 @@
 import { useAccount, useDisconnect } from "wagmi";
+import { Button } from "@/components/ui/button";
 
 export function Account() {
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
   return (
     <div>
-      <div>Connected with {address}</div>
-      <button
+      <span>Connected with {address}</span>
+      <Button
         onClick={() => disconnect()}
-        className="p-2 m-2 bg-red-500 text-white rounded"
+        variant="destructive"
+        className="ml-2 text-xs h-5 p-2"
       >
         Disconnect
-      </button>
+      </Button>
     </div>
   );
 }
