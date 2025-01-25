@@ -1,7 +1,7 @@
 import { useAccount, WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { wagmiConfig } from "./config/wagmi.config";
+import { wagmiConfig } from "./config/wagmi";
 
 import "./App.css";
 import WalletOptions from "./components/WalletOptions";

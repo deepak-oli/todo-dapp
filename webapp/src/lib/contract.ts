@@ -4,10 +4,12 @@ import {
   watchContractEvent,
   writeContract,
 } from "@wagmi/core";
-import { wagmiConfig } from "../config/wagmi.config";
-import todosABI from "../abi/todo.json";
-import { CONTRACT_ADDRESS } from "../constants";
 import { Address } from "viem";
+
+import { wagmiConfig } from "@/config/wagmi";
+import todosABI from "@/assets/abi/todo.json";
+
+const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS;
 
 export const writeAndWaitForReceipt = async (
   address: Address,
@@ -49,14 +51,14 @@ export const createEventWatcher = (
   eventName: string,
   onLog: (logs: any[]) => void
 ) => {
-  const watcher = watchContractEvent(wagmiConfig, {
+  const stopWatcher = watchContractEvent(wagmiConfig, {
     abi: todosABI,
     address: CONTRACT_ADDRESS as Address,
     eventName,
-    onLogs(logs: any[]) {
+    onLogs(logs) {
       console.info(`${eventName} event:`, logs);
       onLog(logs);
     },
   });
-  return watcher;
+  return stopWatcher;
 };

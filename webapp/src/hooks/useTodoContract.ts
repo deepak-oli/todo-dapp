@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { Address } from "viem";
+
 import {
   readContractInfo,
   writeAndWaitForReceipt,
   createEventWatcher,
-} from "../services/todo.service";
-import { ITask } from "../types/index.types";
+} from "@/lib/contract";
+import { ITask } from "@/types/todo";
 
 export default function useTodoContract() {
   const { address } = useAccount();
@@ -14,8 +15,12 @@ export default function useTodoContract() {
   const [tasks, setTasks] = useState<ITask[]>([]);
 
   const fetchTasks = async () => {
-    const tasks = await getTasks();
-    setTasks(tasks as ITask[]);
+    try {
+      const tasks = await getTasks();
+      setTasks(tasks as ITask[]);
+    } catch (error) {
+      console.error("Failed to fetch tasks", error);
+    }
   };
 
   useEffect(() => {
@@ -37,35 +42,35 @@ export default function useTodoContract() {
     };
   }, []);
 
-  const createTask = async (title: string) => {
+  const createTask = (title: string) => {
     return writeAndWaitForReceipt(address as Address, "createTask", [title]);
   };
 
-  const getTasks = async () => {
+  const getTasks = () => {
     return readContractInfo(address as Address, "getTasks", []);
   };
 
-  const updateTask = async (id: number, title: string) => {
+  const updateTask = (id: number, title: string) => {
     return writeAndWaitForReceipt(address as Address, "updateTaskTitle", [
       id,
       title,
     ]);
   };
 
-  const toggleTask = async (id: number) => {
+  const toggleTask = (id: number) => {
     return writeAndWaitForReceipt(address as Address, "toggleTaskDone", [id]);
   };
 
-  const archiveTask = async (id: number) => {
+  const archiveTask = (id: number) => {
     return writeAndWaitForReceipt(address as Address, "archiveTask", [id]);
   };
 
   return {
+    tasks,
     createTask,
     getTasks,
     updateTask,
     toggleTask,
     archiveTask,
-    tasks,
   };
 }
