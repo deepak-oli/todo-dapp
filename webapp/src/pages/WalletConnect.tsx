@@ -1,3 +1,3 @@
 export default function WalletConnect() {
-  return <></>;
+  return <>Wallet Connect</>;
 }

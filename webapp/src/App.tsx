@@ -1,27 +1,23 @@
-import { useAccount, WagmiProvider } from "wagmi";
+import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter } from "react-router";
 
-import { wagmiConfig } from "./config/wagmi";
+import { wagmiConfig } from "@/config/wagmi";
+import Routing from "@/routes";
 
 import "./App.css";
-import WalletOptions from "./components/WalletOptions";
-import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
-function ConnectWallet() {
-  const { isConnected } = useAccount();
-  if (isConnected) return <Home />;
-  return <WalletOptions />;
-}
-
 function App() {
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <ConnectWallet />
-      </QueryClientProvider>
-    </WagmiProvider>
+    <BrowserRouter>
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <Routing />
+        </QueryClientProvider>
+      </WagmiProvider>
+    </BrowserRouter>
   );
 }
 
