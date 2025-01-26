@@ -2,6 +2,8 @@ import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router";
 
+import { Toaster } from "@/components/ui/toaster";
+
 import { wagmiConfig } from "@/config/wagmi";
 import Routing from "@/routes";
 
@@ -15,6 +17,7 @@ function App() {
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <Routing />
+          <Toaster />
         </QueryClientProvider>
       </WagmiProvider>
     </BrowserRouter>

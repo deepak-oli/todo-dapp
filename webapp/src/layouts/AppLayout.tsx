@@ -1,15 +1,13 @@
-import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Outlet } from "react-router";
 
 export default function AppLayout() {
   return (
-    <>
+    <div className="container mx-auto flex flex-col min-h-screen">
       <Header />
-      <main>
+      <main className="flex-1">
         <Outlet />
       </main>
-      <Footer />
-    </>
+    </div>
   );
 }
