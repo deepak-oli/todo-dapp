@@ -8,6 +8,7 @@ import { wagmiConfig } from "@/config/wagmi";
 import Routing from "@/routes";
 
 import "./App.css";
+import { Suspense } from "react";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +17,9 @@ function App() {
     <BrowserRouter>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <Routing />
+          <Suspense fallback={<></>}>
+            <Routing />
+          </Suspense>
           <Toaster />
         </QueryClientProvider>
       </WagmiProvider>

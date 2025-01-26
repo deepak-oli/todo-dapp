@@ -8,9 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 
-import { MoonStar } from "lucide-react";
 import { TaskStatus } from "@/types/todo";
 
 interface IProps {
