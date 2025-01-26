@@ -54,9 +54,6 @@ export default function TodoFilter({ filters, setFilters }: IProps) {
           </SelectGroup>
         </SelectContent>
       </Select>
-      <Button variant="outline">
-        <MoonStar />
-      </Button>
     </>
   );
 }
